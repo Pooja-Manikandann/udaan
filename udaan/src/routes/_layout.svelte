@@ -1,22 +1,23 @@
 <script>
 	import Nav from '../components/Nav.svelte';
 
-	export let segment;
+	// export let segment;
 </script>
 
 <style>
-	main {
-		position: relative;
-		max-width: 56em;
-		background-color: white;
-		padding: 2em;
-		margin: 0 auto;
-		box-sizing: border-box;
+	.container{
+		width: 100%;
+		height: 100vh;
+		background-image: url('../image.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		overflow: hidden;
 	}
 </style>
 
-<Nav {segment}/>
-
-<main>
-	<slot></slot>
-</main>
+<div class="container">
+	<Nav />
+	<main>
+		<slot></slot>
+	</main>
+</div>

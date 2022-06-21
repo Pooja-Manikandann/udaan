@@ -53,10 +53,6 @@
 	}
 </style>
 
-<svelte:head>
-	<title>{post.title}</title>
-</svelte:head>
-
 <h1>{post.title}</h1>
 
 <div class="content">
