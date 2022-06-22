@@ -1,25 +1,19 @@
 <script>
     // export let tripType;
+    export let className="formContainer";
     import tripTypeStore from "../stores/tripTypeStore";
+    import tripLocationStore from "../stores/tripLocationStore"
 	import { onMount } from "svelte";
     import Button from "./Button.svelte"
-	// import CircularProgress from '@smui/circular-progress';
-	// import Demo from '$lib/Demo.svelte';
 	import CircularProgress from '@smui/circular-progress';
-	// import  SnackbarComponentDev from '@smui/snackbar';
-	// import Snackbar, { Actions, Label } from '@smui/snackbar';
-	// import Button from '@smui/button';
-	// import IconButton from '@smui/icon-button';
-   
-	// let snackbarWithClose: SnackbarComponentDev;
-	// let snackbarWithoutClose: SnackbarComponentDev;
-	
-	// let snackbarWithClose= SnackbarComponentDev;
-	// let snackbarWithoutClose= SnackbarComponentDev;
 
-    // console.log('form '+tripType)
-
-    // $: console.log('store in form '+$tripTypeStore)
+    let buttonClass;
+    if(className == "searchForm"){
+        buttonClass = "searchFormButton";
+    }
+    else{
+        buttonClass = "search"
+    }
 
 	let from;
 	let destination;
@@ -28,7 +22,7 @@
 	let getCities;
 	let tripTypeFlag;
 
-	
+    $: console.log($tripLocationStore)
 
     if($tripTypeStore == "round"){
         tripTypeFlag = true;
@@ -81,7 +75,15 @@
             alert("choose date greater than current date")
         }
         // console.log(date+" "+departureDate)
-        window.location.href = "/blog"
+        tripLocationStore.set({
+            from:from,
+            to:destination
+        })
+        localStorage.setItem("tripLocation",JSON.stringify({
+            from:from,
+            to:destination
+        }))
+        
 	}
 
     function swap(){
@@ -123,8 +125,33 @@
                 }
             }
         }
-        
-
+    }
+    .searchForm{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 40px;
+        form{
+            width: 100%;
+            position: relative;
+            .swapContainer{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: #295589;
+                position: absolute;
+                top: 20px;
+                left: calc(104%/4);
+                cursor: pointer;
+                ion-icon{
+                    font-size: 25px;
+                    color: #fff;
+                }
+            }
+        }
     }
     table,td,tr{
         border-collapse:collapse;
@@ -199,16 +226,16 @@
     
 </style>
 
-<div class="formContainer">
+<div class={className}>
 
-	{#if getCities}
-	
-	{#await getCities}
-	<p>Loading....</p>
-	
-	{:then cities}
-		{#if cities.length!=0}
-			<form>
+    {#if getCities}
+    
+    {#await getCities}
+    <p>Loading....</p>
+    
+    {:then cities}
+        {#if cities.length!=0}
+            <form>
                 <div class="swapContainer" on:click="{swap}">
                     <!-- <ion-icon name="swap"></ion-icon> -->
                     <ion-icon name="swap-horizontal-outline"></ion-icon>
@@ -219,7 +246,7 @@
                             <select bind:value="{from}">
                                 <option value="from">From</option>
                                 {#each cities as city }
-                                    <option value="{city.IATA_code}({city.city_name})">{city.IATA_code}({city.city_name})</option>
+                                    <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
                                 {/each}
             
                             </select>
@@ -228,7 +255,7 @@
                             <select  bind:value="{destination}">
                                 <option value="destination">Destination</option>
                                 {#each cities as city }
-                                    <option value="{city.IATA_code}({city.city_name})">{city.IATA_code}({city.city_name})</option>
+                                    <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
                                 {/each}
             
                             </select>
@@ -245,36 +272,15 @@
                         </td>
                     </tr>
                 </table>
-			</form>
-            <Button className="search" label="Search" on:click={handleSubmit} />
-			{:else}
-			<div style="display: flex; justify-content: center">
-				<CircularProgress style="height: 32px; width: 32px;" indeterminate />
-			  </div>
-		{/if}
+            </form>
+            <Button className="{buttonClass}" label="Search" on:click={handleSubmit} />
+            {:else}
+            <p>empty</p>
+        {/if}
 
-	{:catch err}
-		<p>{err.message}</p>
-			
-	{/await}
-	{/if}
+    {:catch err}
+        <p>{err.message}</p>
+            
+    {/await}
+    {/if}
 </div>
-
-
-<!-- <Snackbar bind:this={snackbarWithClose}>
-	<Label>This is a snackbar.</Label>
-	<Actions>
-	  <IconButton class="material-icons" title="Dismiss">close</IconButton>
-	</Actions>
-  </Snackbar>
-   
-  <Snackbar bind:this={snackbarWithoutClose}>
-	<Label>This is a snackbar.</Label>
-  </Snackbar>
-   
-  <Button on:click={() => snackbarWithClose.open()}>
-	<Label>Open Snackbar With Dismiss</Label>
-  </Button>
-  <Button on:click={() => snackbarWithoutClose.open()}>
-	<Label>Open Snackbar Without Dismiss</Label>
-  </Button> -->

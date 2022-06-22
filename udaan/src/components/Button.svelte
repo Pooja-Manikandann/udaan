@@ -39,6 +39,17 @@
         color: #fff;
         font-weight: 600;
     }
+    .searchFormButton{
+        width: 22%;
+        height: 80px;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        background-color: #295589;
+        color: #fff;
+        font-weight: 600;
+        margin-left: 70px;
+    }
 </style>
 
 <button on:click class={className}>{label}</button>
