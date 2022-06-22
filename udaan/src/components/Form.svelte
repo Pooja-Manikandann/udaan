@@ -22,7 +22,7 @@
 	let getCities;
 	let tripTypeFlag;
 
-    $: console.log($tripLocationStore)
+    // $: console.log($tripLocationStore)
 
     if($tripTypeStore == "round"){
         tripTypeFlag = true;
