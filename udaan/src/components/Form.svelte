@@ -1,11 +1,19 @@
 <script>
     // export let tripType;
+    export let theme;
+    export let location={};
     export let className="formContainer";
     import tripTypeStore from "../stores/tripTypeStore";
     import tripLocationStore from "../stores/tripLocationStore"
 	import { onMount } from "svelte";
     import Button from "./Button.svelte"
-	import CircularProgress from '@smui/circular-progress';
+    import { afterUpdate } from "svelte";
+
+    let backgroundColor;
+    let textColor;
+	
+    // $: console.log(location)
+
 
     let buttonClass;
     if(className == "searchForm"){
@@ -30,8 +38,9 @@
     else{
         tripTypeFlag = false;
     }
+    
 	onMount(()=>{
-		getCities =  fetch("https://api.jsonbin.io/b/610c2c91f098011544abe18f")
+		getCities =  fetch("https://run.mocky.io/v3/8b1d2b79-0b1f-4f9f-bd56-17c5aad99ac5")
 		.then((res)=>{
 			if(res.status == 200){
 				return res.json();
@@ -50,24 +59,37 @@
 		})
 	})
 
+    afterUpdate(()=>{
+        // console.log("location : ",location)
+        if(Object.keys(location).length!=0){
+
+            document.getElementById("from").value=location.from
+            document.getElementById("destination").value=location.to
+            document.getElementById("departureDate").value=location.departureDate
+        }
+    })
+    
 	function handleSubmit(e){
         e.preventDefault();
 		if(from == "from" || destination == "destination"){
 			alert("choose starting and destination points")
-            // return;
+            return;
 		}
 		if(from === destination){
 			alert("choose differnt starting and destination points")
+            return;
 		}
         if($tripTypeStore){
             if(departureDate == undefined || returnDate == undefined){
                 alert("choose departure and return dates")
             }
+            return;
         }
-        else{
+        else if($tripTypeStore){
             if(departureDate == undefined){
                 alert("choose departure date")
             }
+            return;
         }
         const date = new Date();
         const depDate = new Date(departureDate)
@@ -81,8 +103,10 @@
         })
         localStorage.setItem("tripLocation",JSON.stringify({
             from:from,
-            to:destination
+            to:destination,
+            departureDate:departureDate
         }))
+        window.location.href = "/search"
         
 	}
 
@@ -91,6 +115,8 @@
             let temp = from;
             from = destination;
             destination = temp;
+            location.from = from;
+            location.to=destination;
         }
     }
 
@@ -207,6 +233,11 @@
 		opacity: 0;
 	}
 
+    .darkSelect{
+        background-color: #021724;
+        color: #fff;
+    }
+
     .from{
         select{
             border-radius: 10px 0 0 10px;
@@ -222,6 +253,9 @@
     }
     ::placeholder {
         color: #295589;
+    }
+    ::placeholder{
+        color: #fff;
     }
     
 </style>
@@ -243,25 +277,40 @@
                 <table>
                     <tr>
                         <td class="place from">
-                            <select bind:value="{from}">
+                            <select class="{theme=="Dark Theme"?"darkSelect":""}" id="from" bind:value="{from}">
                                 <option value="from">From</option>
                                 {#each cities as city }
-                                    <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
+                                    {#if Object.keys(location).length==0}
+                                        <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
+                                        {:else}
+                                        {#if location.from == city.IATA_code}
+                                            <option value="{city.IATA_code}" selected>{city.IATA_code}({city.city_name})</option>
+                                            {:else}
+                                            <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
+                                        {/if}
+                                    {/if}
                                 {/each}
-            
                             </select>
                         </td>
                         <td class="place">
-                            <select  bind:value="{destination}">
+                            <select class="{theme=="Dark Theme"?"darkSelect":""}" id="destination"  bind:value="{destination}">
                                 <option value="destination">Destination</option>
                                 {#each cities as city }
-                                    <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
+                                {#if Object.keys(location).length==0}
+                                        <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
+                                        {:else}
+                                    {#if location.to == city.IATA_code}
+                                        <option value="{city.IATA_code}" selected>{city.IATA_code}({city.city_name})</option>
+                                        {:else}
+                                        <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
+                                    {/if}
+                                {/if}
                                 {/each}
             
                             </select>
                         </td>
                         <td class="date">
-                            <input type="text" placeholder="Departure" onfocus="(this.type='date')" onblur="(this.type='text')" bind:value="{departureDate}"/>
+                            <input class="{theme=="Dark Theme"?"darkSelect":""}" id="departureDate" type="text" placeholder="Departure" onfocus="(this.type='date')" onblur="(this.type='text')" bind:value="{departureDate}"/>
                         </td>
                         <td class="date return">
                             {#if $tripTypeStore}

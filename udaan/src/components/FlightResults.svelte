@@ -1,82 +1,60 @@
 <script>
+
+    import FlightItem from "./FlightItem.svelte";
+    import Graph from "./Graph.svelte";
     export let result=[];
+
 </script>
 
 <style lang="scss">
     .rightContainer{
-        width: 77%;
+        width: 78%;
+        padding: 0 3rem;
         height: 100vh;
         overflow: scroll;
-        border: 1px solid black;
     }
     table{
-		border: 1px solid black;
 		width: 100%;
-		th,td{
-			width: 20%;
-			border: 1px solid black;
-
-		}
-		td{
-			padding: 10px;
+        margin-top: 30px;
+		th{
+            text-align: left;
+            padding: 21px 0
 		}
 	}
-
-	.airline{
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		.logo{
-			width: 30px;
-			height: 30px;
-			img{
-				object-fit: cover;
-			}
-		}
-	}
-    .price{
-		text-align: center;
-	}
+    .tableTitle{
+        height: 40px;
+    }
+    .space{
+        height: 34px;
+        
+    }
+    .arrivalTitle{
+        text-align: left;
+        padding-left: 48px;
+    }
+    .priceTitle{
+        padding-left: 20px;
+    }
 </style>
 
 <div class="rightContainer">
+    <p>Flight Prices</p>
+    <Graph />
     {#if result}
         <table>
-            <tr>
+            <tr class="tableTitle">
                 <th>Departure</th>
                 <th>Duration</th>
-                <th>Arrival</th>
-                <th>Price</th>
+                <th class="arrivalTitle">Arrival</th>
+                <th class="priceTitle">Price</th>
                 <th></th>
             </tr>
             {#each result as data}
-                <tr>
-                    <td>
-                        <div class="airline">
-                            <div class="logo">
-                                <img src="{data.airlines.logo}" alt="logo">
-                            </div>
-                            <div class="airlineName">
-                                {data.airlines.name}
-                            </div>
-                        </div>
-                        <div class="city">
-                            {data.from.IATA_code}, {data.from.city_name}
-                        </div>
-                        <div class="departure">
-                            {data.departure}
-                        </div>
-                    </td>
-                    <td>{data.duration}</td>
-                    <td>{data.arrival}</td>
-                    <td class="price">{data.price}</td>
-                    <td><button>Book</button></td>
-                </tr>
+                <FlightItem data={data} />
+                <tr class="space"></tr>
             {/each}
         </table>
         {:else}
         <p>empty</p>
     {/if}
-        
-    <!-- {/await} -->
 </div>

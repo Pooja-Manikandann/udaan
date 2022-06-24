@@ -1,3 +1,8 @@
+
+<!-- <script type="module" src="flight.js">
+	import flight from "../stores/flights"
+
+</script> -->
 <script>
 	import { onMount,afterUpdate } from "svelte";
 	import Form from "../components/Form.svelte";
@@ -7,6 +12,9 @@
 	import tripLocationStore from "../stores/tripLocationStore";
 	import Filter from "../components/Filter.svelte";
 	import FlightResults from "../components/FlightResults.svelte";
+	import store from "../stores/flights"
+
+	const getFlight = store.retrieveFlights()
 
 	let departure=[];
 	let returnTime=[];
@@ -15,6 +23,8 @@
 
 	let result;
 	let resultCopy;
+
+	console.log($getFlight);
 
 	function getTimePeriod(hours){
 		if(hours<11){
@@ -31,9 +41,12 @@
 		}
 	}
 
+	let location;
+
 	onMount(()=>{
-		let location = JSON.parse(localStorage.getItem("tripLocation"))
+		location = JSON.parse(localStorage.getItem("tripLocation"))
 		tripLocationStore.set(location)
+		console.log("location in searcg",location)
 		
 		searchPromise = fetch("https://run.mocky.io/v3/6229c6e5-4d44-4d1b-8060-78a5160e13f6",{
 		})
@@ -49,18 +62,23 @@
 			let dateDeparture;
 			for(let i in result){
 				date = new Date(result[i].arrival)
+				// departureDate = date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();
+				// console.log(dateDeparture)
 				result[i].arrival = (date.getHours()+":"+date.getMinutes())
 				result[i].arrivalTime = getTimePeriod(date.getHours())
 				
 				dateDeparture = new Date(result[i].departure)
+				let departureDate = dateDeparture.getDate()+"/"+(dateDeparture.getMonth()+1)+"/"+dateDeparture.getFullYear();
 				result[i].departure = (dateDeparture.getHours()+":"+dateDeparture.getMinutes())
 				result[i].departureTime = getTimePeriod(dateDeparture.getHours())
+				result[i].departureDate = departureDate;
 				var dif = Math.round((date - dateDeparture) / (1000 * 60))
 				result[i].duration=Math.round(dif/60) +"h "+ dif%60+"m"
 			}
-			result = result.filter(curentData => curentData.from.IATA_code == "CJB")
-			resultCopy = result;
-			return data;
+			result = result.filter(curentData => curentData.from.IATA_code == location.from && curentData.to.IATA_code == location.to)
+			resultCopy = [...result];
+			store.add(result)
+			// return data;
 		})
 		.catch(err=>{
 			console.log(err)
@@ -100,15 +118,19 @@
 	.searchContainer{
 		background-color: #e4ebf3;
 		.wrapper{
-			width: 90%;
-			margin-left: 50px;
-			margin-top: 50px;
+			padding: 2rem;
+			width: 95%;
+			/* margin-left: 50px; */
+			margin: 0 auto;
+			margin-top: 30px;
 		}
 	}
 
 	.resultContainer{
 		display: flex;
 		flex-direction: row;
+		background-color: #fff;
+		padding: 0 4rem;
 	}
 </style>
 
@@ -116,7 +138,7 @@
 	<Nav className="navSearch" />
 	<div class="wrapper">
 		<TripPreference />
-		<Form className="searchForm" />
+		<Form className="searchForm" location={location} />
 	</div>
 
 	<div class="resultContainer">

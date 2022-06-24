@@ -2,6 +2,17 @@
 	import TripPreference from "../components/TripPreference.svelte";
 	import Form from "../components/Form.svelte";
 	import Nav from "../components/Nav.svelte";
+	import { onMount } from "svelte";
+
+	onMount(()=>{
+		localStorage.removeItem("tripLocation")
+	})
+	let theme;
+	if(theme == "off"){
+		theme = "Light Theme"
+	}
+
+	$: console.log(theme)
 
 </script>
 
@@ -24,10 +35,10 @@
 </style>
 
 <div class="container">
-	<Nav />
+	<Nav bind:multiValue={theme}/>
 	<div class="wrapper">
-		<TripPreference />
-		<Form  />	
+		<TripPreference theme={theme} />
+		<Form  theme={theme}/>	
 	</div>
 </div>
 

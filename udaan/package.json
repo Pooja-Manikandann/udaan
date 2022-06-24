@@ -9,9 +9,11 @@
     "start": "node __sapper__/build"
   },
   "dependencies": {
+    "chart.js": "^3.8.0",
     "compression": "^1.7.1",
     "node-fetch": "^3.2.6",
     "polka": "next",
+    "random-numbers.js": "^1.0.0",
     "sirv": "^1.0.0"
   },
   "devDependencies": {

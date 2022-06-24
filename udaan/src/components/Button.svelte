@@ -1,7 +1,7 @@
 <script>
     export let label;
     export let className;
-
+    export let id=''
 </script>
 
 <style>
@@ -50,6 +50,25 @@
         font-weight: 600;
         margin-left: 70px;
     }
+    .book{
+        padding: 20px 40px;
+        color: #fff;
+        background-color: #295589;
+    }
+    .darkTheme{
+        background-color: #fff;
+        color: #021724;
+    }
+    .darkTheme.selected{
+        background-color: #021724;
+        color: #fff;
+        
+    }
 </style>
 
-<button on:click class={className}>{label}</button>
+<!-- {#if theme == "darkTheme"} -->
+    <button on:click id="{id}" class={className}>{label}</button>
+    <!-- {:else}
+    <button on:click id="{id}" class={`${className} darkTheme`}>{label}</button>
+    
+{/if} -->
