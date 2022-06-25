@@ -3,33 +3,28 @@
 	import { afterUpdate, onMount } from 'svelte';
     import tripTypeStore from '../stores/tripTypeStore';
     import Button from "./Button.svelte"
-	import {TRIP_TYPE} from "../constants/constants"
+	import CONSTANTS from "../constants/constants"
 	let oneWay = false;
 	let round = false;
 
-	
-
 	onMount(() => {
-		let x = sessionStorage.getItem("tripType") || ""
-        console.log("x : "+x)
+		let x = sessionStorage.getItem(CONSTANTS.TRIP_TYPE.LABEL) || ""
         if(x.length == 0){
-            x = "oneWay"
+            x = TRIP_TYPE.ONE_WAY
             tripTypeStore.set(false)
         }
-		x == 'oneWay' ? oneWay = true : round = true;
-		 console.log(typeof(theme)=="undefined")
+		x == CONSTANTS.TRIP_TYPE.ONE_WAY ? oneWay = true : round = true;
 	});
 	
 
 	afterUpdate(()=>{
-        console.log(oneWay+" "+round)
 		if(oneWay){
             tripTypeStore.set(false)
-			sessionStorage.setItem("tripType","oneWay")
+			sessionStorage.setItem(CONSTANTS.TRIP_TYPE.LABEL,CONSTANTS.TRIP_TYPE.ONE_WAY)
 		}
 		if(round){
             tripTypeStore.set(true)
-			sessionStorage.setItem("tripType","round")
+			sessionStorage.setItem(CONSTANTS.TRIP_TYPE.LABEL,CONSTANTS.TRIP_TYPE.ROUND)
 		}
 	})
 	
@@ -47,17 +42,16 @@
 </style>
 
 <div class="tripPreferenceContainer">
-	<!-- {typeof(theme)} -->
 	{#if (theme) == "off"}
-	<Button on:click={toggleTrip(oneWay)}  label="One - Way" className={oneWay ? "selected trip left oneway" : "trip left oneway"} />
-	<Button on:click={toggleTrip(round)}  label="Round Trip" className={round ? "selected trip right round" : "trip right round"} />
+	<Button on:click={toggleTrip(oneWay)}  label="One - Way" className={oneWay ? CONSTANTS.TRIP_TYPE.ONE_WAY_SELECTED_CLASS : CONSTANTS.TRIP_TYPE.ONE_WAY_CLASS} />
+	<Button on:click={toggleTrip(round)}  label="Round Trip" className={round ? CONSTANTS.TRIP_TYPE.ROUND_SELECTED_CLASS : CONSTANTS.TRIP_TYPE.ROUND_CLASS} />
 	{:else}
     {#if theme=="Light Theme"}
-        <Button on:click={toggleTrip(oneWay)}  label="One - Way" className={oneWay ? "selected trip left oneway" : "trip left oneway"} />
-        <Button on:click={toggleTrip(round)}  label="Round Trip" className={round ? "selected trip right round" : "trip right round"} />
+	<Button on:click={toggleTrip(oneWay)}  label="One - Way" className={oneWay ? CONSTANTS.TRIP_TYPE.ONE_WAY_SELECTED_CLASS : CONSTANTS.TRIP_TYPE.ONE_WAY_CLASS} />
+	<Button on:click={toggleTrip(round)}  label="Round Trip" className={round ? CONSTANTS.TRIP_TYPE.ROUND_SELECTED_CLASS : CONSTANTS.TRIP_TYPE.ROUND_CLASS} />
         {:else}
-        <Button on:click={toggleTrip(oneWay)}  label="One - Way" className={oneWay ? "selected darkTheme trip left oneway" : "darkTheme trip left oneway"} />
-        <Button on:click={toggleTrip(round)}  label="Round Trip" className={round ? "selected darkTheme trip right round" : "darkTheme trip right round"} />
+        <Button on:click={toggleTrip(oneWay)}  label="One - Way" className={oneWay? CONSTANTS.TRIP_TYPE.ONE_WAY_DARK_SELECTED_CLASS : CONSTANTS.TRIP_TYPE.ONE_WAY_DARK_CLASS} />
+        <Button on:click={toggleTrip(round)}  label="Round Trip" className={round ? CONSTANTS.TRIP_TYPE.ROUND_DARK_SELECTED_CLASS : CONSTANTS.TRIP_TYPE.ROUND_DARK_CLASS} />
     {/if}
 	{/if}
 </div>

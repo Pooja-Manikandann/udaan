@@ -3,8 +3,10 @@ import Checkbox from "./Checkbox.svelte";
 import OfferCard from "./OfferCard.svelte";
 import Slider from "./Slider.svelte"
 import {fade,fly, slide,scale} from "svelte/transition"
+import CONSTANTS from '../constants/constants';
 import {onMount} from "svelte"
     let flag=false
+    export let theme;
 
     export let departure=[];
 	export let returnTime=[];
@@ -18,45 +20,7 @@ import {onMount} from "svelte"
 		airline=[];
 		result = resultCopy
 	}
-
-    const timeData = [
-        {
-            id:"morning",
-            label:"Before 11am"
-        },
-        {
-            id:"afternoon",
-            label:"11am - 5pm"
-        },
-        {
-            id:"evening",
-            label:"5pm - 9pm"
-        },
-        {
-            id:"night",
-            label:"After 9pm"
-        }
-    ]
-
-    const airlineData = [
-        {
-            id: "Indigo",
-            label:"Indigo Airlines"
-        },
-        {
-            id:"Spicejet",
-            label:"Spicejet"
-        },
-        {
-            id: "Air India",
-            label:"Air India"
-        },
-        {
-            id:"Air Asia",
-            label:"AirAsia India"
-        }
-
-    ]
+    
     function removeOffer(){
         flag=false;
     }
@@ -66,13 +30,14 @@ import {onMount} from "svelte"
         const myTimeout = setTimeout(removeOffer, 3000);
     })
 
-    $: console.log(departure)
-
 </script>
 
 <style lang="scss">
     .leftContainer{
         width: 22%;
+        height: 65vh;
+        overflow: scroll;
+        padding-left: 30px;
         // border: 1px solid black;
         .filterHeader{
             display: flex;
@@ -90,14 +55,15 @@ import {onMount} from "svelte"
             }
         }
     }
+    .leftDarkContainer{
+        background-color: #002237;
+        color: #fff;
+    }
     .departure{
 		padding: 0 20px;
 		.departureCheckboxContainer{
 			display: flex;
 			flex-wrap: wrap;
-			label{
-				width: 50%;
-			}
 		}
 	}
     .returnFilter{
@@ -125,7 +91,7 @@ import {onMount} from "svelte"
 </style>
 
 
-<div class="leftContainer">
+<div class={theme==CONSTANTS.THEME.DARK_THEME?"leftContainer leftDarkContainer":"leftContainer"}>
     <div class="filterHeader">
         <span class="filter">Filters</span>
         <span class="reset" on:click="{clearFilter}">Reset all</span>
@@ -133,13 +99,22 @@ import {onMount} from "svelte"
     <div class="departure">
         <p>Departure</p>
         <div class="departureCheckboxContainer">
-            <Checkbox id={timeData} name="departure" bind:value={departure} />
+            {#if theme==CONSTANTS.THEME.DARK_THEME}
+                <Checkbox id={CONSTANTS.TIME_DATA} name="departure" bind:value={departure} theme="dark" variant="box"/>
+                {:else}
+                <Checkbox id={CONSTANTS.TIME_DATA} name="departure" bind:value={departure} theme="light" variant="box"/>
+            {/if}
         </div>
     </div>
     <div class="returnFilter">
         <p>Return</p>
         <div class="returnFilterContainer">
-            <Checkbox id={timeData} name="return" bind:value={returnTime} />
+            {#if theme==CONSTANTS.THEME.DARK_THEME}
+            <Checkbox id={CONSTANTS.TIME_DATA} name="return" bind:value={returnTime} theme="dark"  variant="box"/>
+                {:else}
+                <Checkbox id={CONSTANTS.TIME_DATA} name="return" bind:value={returnTime} theme="light" variant="box"/>
+            {/if}
+            
         </div>
     </div>
     <div class="priceFilter">
@@ -147,9 +122,9 @@ import {onMount} from "svelte"
         <Slider bind:value={priceValue}  />
     </div>
     <div class="airlineFilter">
-        <p>Preferred Airline</p>
+        <p>Preferred Airlines</p>
         <div class="airlineFilterContainer">
-            <Checkbox id={airlineData} name="airline" bind:value={airline} />
+            <Checkbox id={CONSTANTS.AIRLINE_DATA} name="airline" bind:value={airline} variant="default"/>
         </div>
     </div>
     

@@ -8,11 +8,13 @@
 	import { onMount } from "svelte";
     import Button from "./Button.svelte"
     import { afterUpdate } from "svelte";
+    import CONSTANTS from "../constants/constants"
 
-    let backgroundColor;
-    let textColor;
-	
-    // $: console.log(location)
+    import validate from "../helpers/validate"
+import Loader from "./loader.svelte";
+
+
+    let isButtonDisabled = true;
 
 
     let buttonClass;
@@ -23,6 +25,22 @@
         buttonClass = "search"
     }
 
+    $:if(theme == CONSTANTS.THEME.DARK_THEME && className=="searchForm"){
+        buttonClass = "searchFormButton searchFormDark"
+    }
+    $:if(theme == "Light Theme" && className=="searchForm"){
+        buttonClass = "searchFormButton"
+    }
+    
+    $:if(theme == CONSTANTS.THEME.DARK_THEME && className=="formContainer"){
+        buttonClass = "search searchDark"
+    }
+    $:if(theme == "Light Theme" && className=="formContainer"){
+        buttonClass = "search"
+    }
+
+
+
 	let from;
 	let destination;
 	let departureDate;
@@ -30,7 +48,11 @@
 	let getCities;
 	let tripTypeFlag;
 
-    // $: console.log($tripLocationStore)
+    $: if(!isEmpty(location)){
+        from = location.from;
+        destination = location.to;
+        departureDate = location.departureDate
+    }
 
     if($tripTypeStore == "round"){
         tripTypeFlag = true;
@@ -38,9 +60,19 @@
     else{
         tripTypeFlag = false;
     }
+    function isEmpty(object) {
+        for (const property in object) {
+            return false;
+        }
+        return true;
+    }
+    $: if(typeof(from)=="string" && from!="from" && destination!="destination"){
+        isButtonDisabled=false;
+    }
     
 	onMount(()=>{
-		getCities =  fetch("https://run.mocky.io/v3/8b1d2b79-0b1f-4f9f-bd56-17c5aad99ac5")
+
+		getCities =  fetch(CONSTANTS.API_URLS.CITIES)
 		.then((res)=>{
 			if(res.status == 200){
 				return res.json();
@@ -60,54 +92,23 @@
 	})
 
     afterUpdate(()=>{
-        // console.log("location : ",location)
-        if(Object.keys(location).length!=0){
-
-            document.getElementById("from").value=location.from
-            document.getElementById("destination").value=location.to
-            document.getElementById("departureDate").value=location.departureDate
-        }
+        location={}
     })
     
 	function handleSubmit(e){
         e.preventDefault();
-		if(from == "from" || destination == "destination"){
-			alert("choose starting and destination points")
-            return;
-		}
-		if(from === destination){
-			alert("choose differnt starting and destination points")
-            return;
-		}
-        if($tripTypeStore){
-            if(departureDate == undefined || returnDate == undefined){
-                alert("choose departure and return dates")
-            }
-            return;
+        if(validate(departureDate,returnDate,$tripTypeStore)){
+            tripLocationStore.set({
+                from:from,
+                to:destination
+            })
+            localStorage.setItem("tripLocation",JSON.stringify({
+                from:from,
+                to:destination,
+                departureDate:departureDate
+            }))
+            window.location.href = CONSTANTS.API_URLS.SEARCH
         }
-        else if($tripTypeStore){
-            if(departureDate == undefined){
-                alert("choose departure date")
-            }
-            return;
-        }
-        const date = new Date();
-        const depDate = new Date(departureDate)
-        if(date>depDate){
-            alert("choose date greater than current date")
-        }
-        // console.log(date+" "+departureDate)
-        tripLocationStore.set({
-            from:from,
-            to:destination
-        })
-        localStorage.setItem("tripLocation",JSON.stringify({
-            from:from,
-            to:destination,
-            departureDate:departureDate
-        }))
-        window.location.href = "/search"
-        
 	}
 
     function swap(){
@@ -150,6 +151,23 @@
                     color: #fff;
                 }
             }
+            .swapContainerDark{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: #fff;
+                position: absolute;
+                top: 20px;
+                left: calc(104%/4);
+                cursor: pointer;
+                ion-icon{
+                    font-size: 25px;
+                    color: #002237;
+                }
+            }
         }
     }
     .searchForm{
@@ -177,6 +195,24 @@
                     color: #fff;
                 }
             }
+            .swapContainerDark{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: #fff;
+                position: absolute;
+                top: 20px;
+                left: calc(104%/4);
+                cursor: pointer;
+                ion-icon{
+                    font-size: 25px;
+                    color: #002237;
+                }
+            }
+
         }
     }
     table,td,tr{
@@ -234,7 +270,7 @@
 	}
 
     .darkSelect{
-        background-color: #021724;
+        background-color: #002237;
         color: #fff;
     }
 
@@ -251,12 +287,27 @@
             border-radius: 0 10px 10px 0;
         }
     }
+
+    input:disabled{
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .dark{
+        ::placeholder {
+            color: #fff;
+        }
+    }
+
     ::placeholder {
         color: #295589;
     }
-    ::placeholder{
-        color: #fff;
-    }
+    .load{
+		text-align: center;
+		font-size: 25px;
+		display: block;
+		margin: 20px auto;
+	}
     
 </style>
 
@@ -265,66 +316,55 @@
     {#if getCities}
     
     {#await getCities}
-    <p>Loading....</p>
+    <p class="load"><Loader /></p>
     
     {:then cities}
         {#if cities.length!=0}
             <form>
-                <div class="swapContainer" on:click="{swap}">
-                    <!-- <ion-icon name="swap"></ion-icon> -->
+                <div class={theme==CONSTANTS.THEME.DARK_THEME?"swapContainerDark":"swapContainer"} on:click="{swap}">
                     <ion-icon name="swap-horizontal-outline"></ion-icon>
                 </div>
                 <table>
                     <tr>
                         <td class="place from">
-                            <select class="{theme=="Dark Theme"?"darkSelect":""}" id="from" bind:value="{from}">
+                            <select class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" id="from" bind:value="{from}">
                                 <option value="from">From</option>
                                 {#each cities as city }
-                                    {#if Object.keys(location).length==0}
-                                        <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
-                                        {:else}
-                                        {#if location.from == city.IATA_code}
-                                            <option value="{city.IATA_code}" selected>{city.IATA_code}({city.city_name})</option>
-                                            {:else}
-                                            <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
-                                        {/if}
-                                    {/if}
+                                    <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
                                 {/each}
                             </select>
                         </td>
                         <td class="place">
-                            <select class="{theme=="Dark Theme"?"darkSelect":""}" id="destination"  bind:value="{destination}">
+                            <select class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" id="destination"  bind:value="{destination}">
                                 <option value="destination">Destination</option>
                                 {#each cities as city }
-                                {#if Object.keys(location).length==0}
-                                        <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
-                                        {:else}
-                                    {#if location.to == city.IATA_code}
-                                        <option value="{city.IATA_code}" selected>{city.IATA_code}({city.city_name})</option>
-                                        {:else}
-                                        <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
-                                    {/if}
-                                {/if}
+                                    <option value="{city.IATA_code}">{city.IATA_code}({city.city_name})</option>
                                 {/each}
             
                             </select>
                         </td>
-                        <td class="date">
-                            <input class="{theme=="Dark Theme"?"darkSelect":""}" id="departureDate" type="text" placeholder="Departure" onfocus="(this.type='date')" onblur="(this.type='text')" bind:value="{departureDate}"/>
+
+                        <td class={theme==CONSTANTS.THEME.DARK_THEME?"date dark": "date"}>
+                            <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" id="departureDate" type="text" min="2022-07-24" placeholder="Departure" onfocus="(this.type='date') (this.min='2022-07-24')" onblur="(this.type='text')" bind:value="{departureDate}"/>
                         </td>
-                        <td class="date return">
+                        <td class={theme==CONSTANTS.THEME.DARK_THEME?"date dark return": "date return"}>
                             {#if $tripTypeStore}
-                                <input type="text" placeholder="Return" onfocus="(this.type='date')" onblur="(this.type='text')" bind:value="{returnDate}" />
+                                <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" type="text" placeholder="Return" min="2022-07-24" onfocus="(this.type='date') (this.min='2022-07-24')" onblur="(this.type='text')" bind:value="{returnDate}" />
                                 {:else}
-                                <input type="text" placeholder="Return" onfocus="(this.type='date')" onblur="(this.type='text')" bind:value="{returnDate}" disabled/>
+                                <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" type="text" placeholder="Return" onfocus="(this.type='date') (this.min='2022-07-24')" onblur="(this.type='text')" bind:value="{returnDate}" disabled/>
                             {/if}
                         </td>
                     </tr>
                 </table>
             </form>
-            <Button className="{buttonClass}" label="Search" on:click={handleSubmit} />
+            {#if className == "searchForm"}
+                
+            <Button className={buttonClass} label={CONSTANTS.BUTTON.UPDATE} on:click={handleSubmit} isButtonDisabled={isButtonDisabled}/>
             {:else}
-            <p>empty</p>
+            <Button className={buttonClass} label={CONSTANTS.BUTTON.SEARCH} on:click={handleSubmit} isButtonDisabled={isButtonDisabled}/>
+            {/if}
+            {:else}
+            <p class="load"><Loader /></p>
         {/if}
 
     {:catch err}

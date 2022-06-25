@@ -1,7 +1,7 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import CONSTANTS from "../constants/constants"
     let dispatch = createEventDispatcher();
-    // let flag=false
     function close(){
         dispatch('close','clicked')
     }
@@ -23,18 +23,11 @@
     }
 </style>
 
-<!-- <div transition:scale class="offerContainer">
-    <h3>One time Offer!!</h3>
-    <p>Reprehenderit consectetur amet nulla veniam irure labore amet irure. Ipsum consectetur non duis non ea culpa aute aliquip elit. Sunt non commodo velit consequat occaecat veniam eiusmod ut excepteur sint. </p>
-</div> -->
-<!-- <button on:click={()=>{flag=!flag}}>button</button> -->
-<!-- {#if flag} -->
     
     <div class="offerContainer" >
         <div class="header">
-            <h3>One time Offer!!</h3>
+            <h3>{CONSTANTS.OFFER_CARD.TITLE}</h3>
             <ion-icon on:click="{close}" name="close-outline"></ion-icon>
         </div>
-        <p>Reprehenderit consectetur amet nulla veniam irure labore amet irure. Ipsum consectetur non duis non ea culpa aute aliquip elit. Sunt non commodo velit consequat occaecat veniam eiusmod ut excepteur sint. </p>
+        <p>{CONSTANTS.OFFER_CARD.DESCRIPTION}</p>
     </div>
-<!-- {/if} -->

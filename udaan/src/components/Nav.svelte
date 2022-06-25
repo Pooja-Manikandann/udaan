@@ -2,30 +2,31 @@
 	export let className='';
 	import { afterUpdate } from 'svelte';
 	import themeStore from "../stores/themeStore"
-	import {THEME} from "../constants/constants"
+	import CONSTANTS from '../constants/constants';
 
 	import Switch from './Switch.svelte'
 	
 
 	export let multiValue;
 	if(multiValue == "off"){
-		multiValue = THEME.LIGHT_THEME
+		multiValue = CONSTANTS.THEME.LIGHT_THEME
 	}
 
 	afterUpdate(()=>{
-		console.log('after update '+multiValue)
 		themeStore.set(multiValue);
 		localStorage.setItem("theme",multiValue)
 	})
-
-	// $: console.log('theme store : '+$themeStore)
-
 </script>
 
 <style lang="scss">
 	nav{
 		.navSearch{
 			background-color: #295589;
+			margin: 0;
+			padding: 20px 50px;
+		}
+		.navDarkSearch{
+			background-color: #002237;
 			margin: 0;
 			padding: 20px 50px;
 		}
@@ -50,7 +51,7 @@
 	<ul class={className}>
 		<li><a href="."><img src="logo.svg" alt="logo"></a></li>
 		<li class="switch">
-			<Switch bind:value={multiValue} label="" design="multi" options={[THEME.DARK_THEME, THEME.LIGHT_THEME]} fontSize={12}/>
+			<Switch bind:value={multiValue} label="" design="multi" options={[CONSTANTS.THEME.DARK_THEME, CONSTANTS.THEME.LIGHT_THEME]} fontSize={12}/>
 		</li>
 	</ul>
 </nav>

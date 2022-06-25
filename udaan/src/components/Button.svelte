@@ -2,6 +2,7 @@
     export let label;
     export let className;
     export let id=''
+    export let isButtonDisabled=false;
 </script>
 
 <style>
@@ -14,6 +15,7 @@
         font-weight: 600;
         letter-spacing: 1px;
         background-color: #fff;
+        color: #295589;
 	}
 	.left{
 		border-radius: 10px 0 0 10px;
@@ -39,6 +41,11 @@
         color: #fff;
         font-weight: 600;
     }
+    .search:disabled,.searchFormButton:disabled{
+        /* background-color: #476a94fb; */
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
     .searchFormButton{
         width: 22%;
         height: 80px;
@@ -50,25 +57,36 @@
         font-weight: 600;
         margin-left: 70px;
     }
+    .searchDark{
+        background-color: #002237;
+        color: #fff;
+    }
+    .searchFormDark{
+        background-color: #002237;
+        color: #fff;
+    }
     .book{
         padding: 20px 40px;
         color: #fff;
         background-color: #295589;
+        font-weight: 800;
+        /* font-size: 12px; */
+        border-radius: 5px;
     }
-    .darkTheme{
+    .darkBook{
         background-color: #fff;
         color: #021724;
     }
+    .darkTheme{
+        background-color: #fff;
+        color: #002237;
+    }
     .darkTheme.selected{
-        background-color: #021724;
+        background-color: #002237;
         color: #fff;
         
     }
 </style>
 
-<!-- {#if theme == "darkTheme"} -->
-    <button on:click id="{id}" class={className}>{label}</button>
-    <!-- {:else}
-    <button on:click id="{id}" class={`${className} darkTheme`}>{label}</button>
-    
-{/if} -->
+
+<button on:click id="{id}" class={className} disabled={isButtonDisabled}>{label}</button>

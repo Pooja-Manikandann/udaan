@@ -1,13 +1,4 @@
 import {writable} from "svelte/store"
-// console.log(localStorage === window.localStorage);
-// console.log(typeof(window))
-// const getFlights = () => {
-//     const notes = JSON.parse(localStorage.getItem("flights")) || []
-//     return notes; 
-// }
-// console.log(localStorage)
-
-// const flights = JSON.parse(localStorage.getItem("flights")) || []
 
 const flightStore = writable()
 

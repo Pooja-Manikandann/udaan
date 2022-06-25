@@ -1,38 +1,38 @@
-<canvas id="myChart" width="300" height="30" bind:this="{ctx}"></canvas>
+
 <script>
     import Chart from "chart.js/auto"
-import { onMount } from "svelte";
-// import random from "random-numbers.js"
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+    import { onMount, afterUpdate } from "svelte";
+    import CONSTANTS from "../constants/constants";
+    import {generateRandomNumbers} from "../helpers/graph"
 
-// console.log(getRandomInt(1,10))
-    let data = []
-    for(let i=0;i<15;i++){
+    export let theme;
 
-        data.push(getRandomInt(5000,6000))
+    let graphColor
+
+    if(theme == CONSTANTS.THEME.DARK_THEME){
+        graphColor="#ffffff"
     }
-    // console.log(data)
-    // const Chart = require('chart.js');
+    else{
+        graphColor='#295589'
+    }
+    let data = generateRandomNumbers(5000,6000,15)
+
     let ctx;
+    
     onMount(()=>{
-        // const ctx = document.getElementById('myChart');
         const myChart = new Chart(ctx, {
             
             type: 'line',
             data: {
-                labels: ['Jun 1', 'Jun 2', 'Jun 3', 'Jun 4', 'Jun 5', 'Jun 6', 'Jun 7', 'Jun 8', 'Jun 9', 'Jun 10','Jun 11','Jun 12','Jun13','Jun 14','Jun 15'],
+                labels: CONSTANTS.GRAPH.LABEL,
                 datasets: [{
-                    label: "price",
+                    label: CONSTANTS.GRAPH.NAME,
                     data: data,
                     backgroundColor: [
-                        '#295589'
+                        graphColor
                     ],
                     borderColor: [
-                        '#295589'
+                        graphColor
                     ],
                     borderWidth: 1
                 }]
@@ -44,8 +44,6 @@ function getRandomInt(min, max) {
                     },
                     y: {
                         grid: {display:false}
-                        // beginAtZero: true
-                        
                     }
                 }
             }
@@ -53,3 +51,14 @@ function getRandomInt(min, max) {
     })
 
 </script>
+
+<style>
+    .dark{
+        background-color: #002237;
+    }
+    .light{
+        background-color: #E3EBF4;
+    }
+</style>
+
+<canvas class={theme==CONSTANTS.THEME.DARK_THEME?"dark":"light"} id="myChart" width="300" height="30" bind:this="{ctx}"></canvas>

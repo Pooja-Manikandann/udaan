@@ -1,7 +1,8 @@
 <script>
 	import TripPreference from "../components/TripPreference.svelte";
-	import Form from "../components/Form.svelte";
+	import Form from "../components/FlightTravelForm.svelte";
 	import Nav from "../components/Nav.svelte";
+	import CONSTANTS from "../constants/constants"
 	import { onMount } from "svelte";
 
 	onMount(()=>{
@@ -9,10 +10,8 @@
 	})
 	let theme;
 	if(theme == "off"){
-		theme = "Light Theme"
+		theme = CONSTANTS.THEME.LIGHT_THEME
 	}
-
-	$: console.log(theme)
 
 </script>
 

@@ -1,7 +1,9 @@
 <script>
-    // export let currentTicket;
-    // console.log(currentTicket)
     import { createEventDispatcher } from "svelte/internal";
+
+    import CONSTANTS from "../constants/constants";
+
+    export let theme;
 
     let dispatch = createEventDispatcher();
     function closeOverLay(){
@@ -34,7 +36,7 @@
         width: 50%;
         padding: 20px;
         border-radius: 20px;
-        margin-top: -360px;
+        margin-top: -564px;
         .header{
             width: 100%;
             padding: 1rem 2rem;
@@ -48,23 +50,16 @@
             width: 100%;
             padding: 0 2rem;
         }
-
-        .footer{
-            // padding: 20px;
-        }
     }
-    // .header{
-    //     div{
-    //         display: flex;
-    //         justify-content: space-between;
-    //     }
-    // }
+    .darkModel{
+        background-color: #16222b;
+    }
 
 </style>
 
 <div class="overlay" on:click="{closeOverLay}"></div>
 
-<div class="model">
+<div class={theme==CONSTANTS.THEME.DARK_THEME?"model darkModel":"model"}>
     <div class="header">
         <slot name="header" />
     </div>

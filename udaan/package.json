@@ -14,7 +14,8 @@
     "node-fetch": "^3.2.6",
     "polka": "next",
     "random-numbers.js": "^1.0.0",
-    "sirv": "^1.0.0"
+    "sirv": "^1.0.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -1,7 +1,5 @@
 <script>
-	import Slider from '@bulatdashiev/svelte-slider';
-// import { bind } from 'svelte/internal';
-	
+	import Slider from '@bulatdashiev/svelte-slider';	
 	export let value = [1000, 6000];
 </script>
 

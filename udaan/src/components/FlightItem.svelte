@@ -1,20 +1,18 @@
 <script>
     import ConfirmationModel from "./ConfirmationModel.svelte";
+    import CONSTANTS from "../constants/constants";
     export let data;
+    export let theme;
 
     let currentTicket;
     let tripId=1;
 
-    import { createEventDispatcher } from "svelte";
-import Button from "./Button.svelte";
-
-    let dispatch = createEventDispatcher();
+    import Button from "./Button.svelte";
 
     let showModel=false;
 
     function openModel(e){
         currentTicket=JSON.parse(e.target.id);
-        // console.log("id : ",current.price)
         showModel = true;
     }
     function closeModel(){
@@ -27,10 +25,15 @@ import Button from "./Button.svelte";
     .flightItem{
         background-color: #E3EBF4;
     }
+    .flightDarkItem{
+        background-color: #002237;
+        color: #fff;
+    }
     .airline{
 		display: flex;
 		align-items: center;
 		gap: 10px;
+        margin: 6px 0;
 		.logo{
 			width: 30px;
 			height: 30px;
@@ -45,6 +48,7 @@ import Button from "./Button.svelte";
         font-size: 13px;
         color: grey;
         font-weight: 500;
+        margin: 4px 0;
     }
     .departure{
         width: 15%;
@@ -76,10 +80,6 @@ import Button from "./Button.svelte";
 		text-align: left;
 	}
     td{
-			// width: 20%;
-
-    }
-    td{
         padding: 10px;
     }
     .header{
@@ -93,8 +93,20 @@ import Button from "./Button.svelte";
             box-shadow: 0px 5px 10px 0px rgba(1, 1, 1, 0.5); 
         }
     }
+    .darkHeader{
+        background-color: #002237;
+    }
     .content{
         width: 100%;
+        span{
+            font-size: 18px;
+            font-weight: 500;
+            
+        }
+    }
+    .darkContent{
+        background-color: #002237;
+        color: #fff;
         span{
             font-size: 18px;
             font-weight: 500;
@@ -112,6 +124,10 @@ import Button from "./Button.svelte";
         box-shadow: 0px 5px 10px 0px rgba(1, 1, 1, 0.5);
         background-color: #E3EBF4;
     }
+    .darkBook{
+        background-color: #08192361;
+        box-shadow: 5px 5px 10px 10px #8d7c7c80;
+    }
 
     .footer{
         p{
@@ -125,7 +141,7 @@ import Button from "./Button.svelte";
     }
 </style>
 
-<tr class="flightItem">
+<tr class={theme==CONSTANTS.THEME.DARK_THEME?"flightDarkItem":"flightItem"}>
     <td class="departure">
         <div class="airline">
             <div class="logo">
@@ -157,23 +173,27 @@ import Button from "./Button.svelte";
     <td class="price">₹ {data.price}</td>
     <!-- <td class="space"></td> -->
     <td class="bookColumn">
-        <Button on:click={openModel} label="book" className="book" id={JSON.stringify(data)} />
+        {#if theme==CONSTANTS.THEME.DARK_THEME}
+            <Button on:click={openModel} label="Book" className="book darkBook" id={JSON.stringify(data)} />
+            {:else}
+                <Button on:click={openModel} label="Book" className="book" id={JSON.stringify(data)} />
+        {/if}
     </td>
 </tr>
 
 
 {#if showModel}
     
-    <ConfirmationModel on:closeOverlay={closeModel}>
-        <div class="header" slot="header">
+    <ConfirmationModel theme={theme} on:closeOverlay={closeModel}>
+        <div class={theme==CONSTANTS.THEME.DARK_THEME?"header darkHeader":"header"} slot="header">
             <h2>Confirmed Booking</h2>
             <img src="{currentTicket.airlines.logo}" width="80" alt="">
         </div>
-        <div class="content" slot="content">
+        <div class={theme==CONSTANTS.THEME.DARK_THEME?"content darkContent":"content"} slot="content">
             <p class="confirm">{currentTicket.from.IATA_code} to {currentTicket.to.IATA_code} is confirmed</p>
             <p>We will email you shortly</p>
             <span class="tripId">Your trip ID {tripId}. Please use this id for any communication with us</span>
-            <div class="book">
+            <div class={theme==CONSTANTS.THEME.DARK_THEME?"book darkBook":"book"}>
                 <h3>Just booked</h3>
                 <span>{currentTicket.airlines.name}</span>
                 <span>{currentTicket.from.IATA_code} <ion-icon name="arrow-forward-outline"></ion-icon> {currentTicket.to.IATA_code}</span>
