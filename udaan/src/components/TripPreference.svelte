@@ -10,7 +10,7 @@
 	onMount(() => {
 		let x = sessionStorage.getItem(CONSTANTS.TRIP_TYPE.LABEL) || ""
         if(x.length == 0){
-            x = TRIP_TYPE.ONE_WAY
+            x = CONSTANTS.TRIP_TYPE.ONE_WAY
             tripTypeStore.set(false)
         }
 		x == CONSTANTS.TRIP_TYPE.ONE_WAY ? oneWay = true : round = true;

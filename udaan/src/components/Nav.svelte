@@ -8,13 +8,31 @@
 	
 
 	export let multiValue;
+
 	if(multiValue == "off"){
 		multiValue = CONSTANTS.THEME.LIGHT_THEME
 	}
 
 	afterUpdate(()=>{
+
+		let x = sessionStorage.getItem("theme") || ""
+		
+		if(x.length==0){
+			multiValue = CONSTANTS.THEME.LIGHT_THEME
+			sessionStorage.setItem("theme",CONSTANTS.THEME.LIGHT_THEME)
+		}
+		else{
+
+			if(typeof(multiValue)=="undefined"){
+				multiValue = x;
+				sessionStorage.setItem("theme",x)
+			}
+			else if(x!=multiValue){
+				sessionStorage.setItem("theme",multiValue)
+			}
+		}
+
 		themeStore.set(multiValue);
-		localStorage.setItem("theme",multiValue)
 	})
 </script>
 

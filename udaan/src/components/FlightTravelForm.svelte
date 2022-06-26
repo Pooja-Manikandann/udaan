@@ -345,13 +345,13 @@ import Loader from "./loader.svelte";
                         </td>
 
                         <td class={theme==CONSTANTS.THEME.DARK_THEME?"date dark": "date"}>
-                            <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" id="departureDate" type="text" min="2022-07-24" placeholder="Departure" onfocus="(this.type='date') (this.min='2022-07-24')" onblur="(this.type='text')" bind:value="{departureDate}"/>
+                            <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" id="departureDate" type="text" placeholder="Departure" onfocus="(this.type='date') (this.min='2022-07-24') (this.autofocus)" onblur="(this.type='text')" bind:value="{departureDate}"/>
                         </td>
                         <td class={theme==CONSTANTS.THEME.DARK_THEME?"date dark return": "date return"}>
                             {#if $tripTypeStore}
-                                <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" type="text" placeholder="Return" min="2022-07-24" onfocus="(this.type='date') (this.min='2022-07-24')" onblur="(this.type='text')" bind:value="{returnDate}" />
+                                <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" type="text" placeholder="Return" onfocus="(this.type='date') (this.min='2022-07-24') (this.autofocus)" onblur="(this.type='text')" bind:value="{returnDate}" />
                                 {:else}
-                                <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" type="text" placeholder="Return" onfocus="(this.type='date') (this.min='2022-07-24')" onblur="(this.type='text')" bind:value="{returnDate}" disabled/>
+                                <input class="{theme==CONSTANTS.THEME.DARK_THEME?"darkSelect":""}" type="text" placeholder="Return" onfocus="(this.type='date') (this.min='2022-07-24') (this.autofocus)" onblur="(this.type='text')" bind:value="{returnDate}" disabled/>
                             {/if}
                         </td>
                     </tr>

@@ -77,8 +77,12 @@ const CONSTANTS = {
         AFTERNOON:"afternoon",
         EVENING:"evening",
         NIGHT:"night"
+    },
+    VALIDATION:{
+        DEPARTURE_DATE_GREATER:"choose departure date less than return date",
+        EMPTY_DATES:"choose departure and return dates",
+        EMPTY_DEPARTURE:"choose departure date"
     }
-
 
 }
 

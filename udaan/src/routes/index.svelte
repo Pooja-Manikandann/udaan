@@ -3,15 +3,31 @@
 	import Form from "../components/FlightTravelForm.svelte";
 	import Nav from "../components/Nav.svelte";
 	import CONSTANTS from "../constants/constants"
-	import { onMount } from "svelte";
+	import { afterUpdate, onMount } from "svelte";
+
+	let theme;
 
 	onMount(()=>{
+
 		localStorage.removeItem("tripLocation")
+		let x = sessionStorage.getItem("theme") || ""
+			theme = x;
+		// }
 	})
-	let theme;
-	if(theme == "off"){
-		theme = CONSTANTS.THEME.LIGHT_THEME
-	}
+
+	afterUpdate(()=>{
+		if(theme == "off"){
+			theme = CONSTANTS.THEME.LIGHT_THEME
+			sessionStorage.setItem("theme",CONSTANTS.THEME.LIGHT_THEME)
+		}
+		if(sessionStorage.getItem("theme")!=theme){
+			sessionStorage.setItem("theme",theme)
+		}
+
+		theme = sessionStorage.getItem("theme")
+	})
+	
+	
 
 </script>
 

@@ -1,17 +1,19 @@
+import CONSTANTS from "../constants/constants";
+
 export default function validate(departureDate,returnDate,$tripTypeStore){
     if($tripTypeStore){
         if(departureDate == undefined || returnDate == undefined){
-            alert("choose departure and return dates")
+            alert(CONSTANTS.VALIDATION.DEPARTURE_DATE_GREATER)
             return false;
         }
         else if(departureDate>returnDate){
-            alert("choose departure date less than return date")
+            alert(CONSTANTS.VALIDATION.EMPTY_DATES)
             return false;
         }
     }
-    else if($tripTypeStore){
+    else if(!$tripTypeStore){
         if(departureDate == undefined){
-            alert("choose departure date")
+            alert(CONSTANTS.VALIDATION.EMPTY_DEPARTURE)
             return false;
         }
     }

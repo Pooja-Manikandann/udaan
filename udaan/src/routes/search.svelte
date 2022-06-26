@@ -9,7 +9,6 @@
 	import FlightResults from "../components/FlightResults.svelte";
 	import store from "../stores/flights"
 	import CONSTANTS from "../constants/constants"
-	// import CONSTANTS from "../constants/constants"
 	import {ISODateFormat} from "../helpers/date"
 	import Loader from "../components/loader.svelte";
 
@@ -28,6 +27,8 @@
 	onMount(()=>{
 		location = JSON.parse(localStorage.getItem("tripLocation"))
 		tripLocationStore.set(location)
+
+		theme = sessionStorage.getItem("theme")
 		
 		fetch(CONSTANTS.API_URLS.FLIGHTS)
 		.then(data => {

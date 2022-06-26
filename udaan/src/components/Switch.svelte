@@ -4,10 +4,9 @@
     export let design = 'inner label'
     export let options = [];
     export let fontSize = 16;
-    export let value = 'off';
+    export let value;
 
     let checked = true;
-
 
     const uniqueID = Math.floor(Math.random() * 100)
 
@@ -18,10 +17,10 @@
 
         checked = state === 'true' ? false : true
 
-        value = checked === true ? 'on' : 'off'
+        value = checked === true ? 'Light Theme' : 'Dark Theme'
     }
 	
-	  const slugify = (str = "") =>
+    const slugify = (str = "") =>
     str.toLowerCase().replace(/ /g, "-").replace(/\./g, "");
 
 </script>
@@ -34,8 +33,8 @@
         aria-checked={checked}
         aria-labelledby={`switch-${uniqueID}`}
         on:click={handleClick}>
-            <span>on</span>
-            <span>off</span>
+            <span>Light Theme</span>
+            <span>Dark Theme</span>
     </button>
 </div>
 {:else if design == 'slider'}
